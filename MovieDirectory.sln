@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33414.496
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieDirectory", "src\MovieDirectory\MovieDirectory.csproj", "{AB6C4C4E-B3A6-4353-9FBD-F6F6395F41A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieDirectory", "src\MovieDirectory\MovieDirectory.csproj", "{AB6C4C4E-B3A6-4353-9FBD-F6F6395F41A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieDirectory.E2E.Tests", "tests\MovieDirectory.E2E.Tests\MovieDirectory.E2E.Tests.csproj", "{385B0B8E-CC55-44AA-8CF4-776A94D4A103}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieDirectory.E2E.Tests", "tests\MovieDirectory.E2E.Tests\MovieDirectory.E2E.Tests.csproj", "{385B0B8E-CC55-44AA-8CF4-776A94D4A103}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

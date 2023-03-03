@@ -1,42 +1,66 @@
-﻿using MovieDirectory.Application.Model;
-using MovieDirectory.Core.Exceptions;
+﻿using System.Net;
+using System.Net.Http.Json;
+
+using Ardalis.Result;
+
+using MovieDirectory.Application.Model;
 using MovieDirectory.Core.Services;
-
-using OneOf;
-
-using RestSharp;
 
 namespace MovieDirectory.Application.Services
 {
     public class OMDbClient : IOMDbClient
     {
-        private readonly Uri BaseUri = new Uri("http://www.omdbapi.com/");
-        private readonly RestClient _client;
+        private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<OMDbClient> _logger;
 
-        public OMDbClient()
+        public OMDbClient(HttpClient httpClient, IConfiguration configuration, ILogger<OMDbClient> logger)
         {
-            _client = new RestClient(BaseUri).AddDefaultQueryParameter("apiKey", "");
+            _httpClient = httpClient;
+            _configuration = configuration;
+            _logger = logger;
         }
 
-        public async Task<IEnumerable<Movie>> MoviesSearch(string s)
+        public async Task<Result<SearchResult>> MoviesSearch(string s, string page = "1")
         {
-            var request = new RestRequest().AddQueryParameter("s", s);
-            var movies = await _client.GetAsync<IEnumerable<Movie>>(request);
-
-            return movies;
-        }
-
-        public async Task<OneOf<Movie, MovieNotFoundExecption>> GetMoveById(string i)
-        {
-            var request = new RestRequest().AddQueryParameter("i", i);
-            var movie = await _client.GetAsync<Movie>(request);
-
-            if (movie == null)
+            try
             {
-                return new MovieNotFoundExecption("Movie was not found");
+                var result = await _httpClient.GetAsync($"?apikey={_configuration["OMDbApiKey"]}&s={s}&page={page}");
+
+                if (result.Content == null)
+                {
+                    return Result.Error("Response content was null");
+                }
+
+                result.EnsureSuccessStatusCode();
+
+                var searchResult = await result.Content.ReadFromJsonAsync<SearchResult>();
+                return Result.Success(searchResult);
+            } catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex.Message);
+
+                return Result.Error(ex.Message);
+            } catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return Result.Error(ex.Message);
+            }
+        }
+
+        public async Task<Result<Movie>> GetMovieAsync(string id)
+        {
+            var result = await _httpClient.GetAsync($"?apikey={_configuration["OMDbApiKey"]}&i={id}&plot=full");
+            Console.WriteLine(await result.Content.ReadAsStringAsync());
+
+            var movie = await result.Content.ReadFromJsonAsync<Movie>();
+            
+            if (result.IsSuccessStatusCode && movie != null)
+            {
+                return Result.Success(movie);
             }
 
-            return movie;
+            return Result.NotFound();
         }
     }
 }

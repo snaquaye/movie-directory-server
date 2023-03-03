@@ -1,3 +1,5 @@
+using Microsoft.VisualStudio.TestPlatform.TestHost;
+
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace MovieDirectory.E2E.Tests

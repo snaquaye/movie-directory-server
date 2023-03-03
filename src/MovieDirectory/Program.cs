@@ -2,8 +2,13 @@ using System.Text.Json;
 
 using FastEndpoints.Swagger;
 
-using MovieDirectory.Extensions;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 
+using MovieDirectory.Application.Services;
+using MovieDirectory.Core.Services;
+using MovieDirectory.Extensions;
+using MovieDirectory.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,12 +18,11 @@ builder.WebHost.ConfigureKestrel(options =>
     options.AllowSynchronousIO = false;
 });
 
+var configuration = builder.Configuration;
 
 builder.Host.UseConsoleLifetime(options => options.SuppressStatusMessages = true);
 
-
-builder.Services.AddAuthentication();
-builder.Services.AddAuthorization();
+builder.Services.AddMovieDirectoryService(configuration);
 
 builder.Services.AddFastEndpoints(options =>
 {
@@ -34,8 +38,8 @@ if (app.Environment.IsDevelopment())
     app.UseDefaultExceptionHandler();
 }
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseStaticFiles();
+app.UseCors();
 
 app.UseFastEndpoints(options =>
 {
@@ -51,7 +55,3 @@ if (app.Environment.IsDevelopment())
 }
 
 await app.RunAsync();
-
-public partial class Program
-{
-}

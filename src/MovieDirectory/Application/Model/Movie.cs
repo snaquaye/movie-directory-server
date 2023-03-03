@@ -3,9 +3,9 @@
     public class Movie
     {
         public string Title { get; set; }
-        public long Year { get; set; }
+        public string Year { get; set; }
         public string Rated { get; set; }
-        public string Released { get; set; }
+    public string Released { get; set; }
         public string Runtime { get; set; }
         public string Genre { get; set; }
         public string Director { get; set; }
@@ -19,7 +19,7 @@
         public Rating[] Ratings { get; set; }
         public string Metascore { get; set; }
         public string ImdbRating { get; set; }
-        public long ImdbVotes { get; set; }
+        public string ImdbVotes { get; set; }
         public string ImdbId { get; set; }
         public string Type { get; set; }
         public string Dvd { get; set; }
